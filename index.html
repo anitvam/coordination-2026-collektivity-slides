@@ -1,0 +1,445 @@
+<!DOCTYPE html><html lang="en"><head>
+	<meta name="generator" content="Hugo 0.155.3">
+    <meta charset="utf-8">
+<title>High-Fidelity Simulation of Aggregate Computing Systems with Collektivity</title>
+
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="stylesheet" href="/coordination-2026-collektivity-slides/reveal-js/dist/reset.css">
+<link rel="stylesheet" href="/coordination-2026-collektivity-slides/reveal-js/dist/reveal.css">
+  <link rel="stylesheet" href="/coordination-2026-collektivity-slides/css/custom-theme.min.47c427c3733659f3106d7c7350692cd7449c13cab2bd96927323b5c021ffdfa5.css" id="theme"><link rel="stylesheet" href="/coordination-2026-collektivity-slides/highlight-js/solarized-dark.min.css">
+<link rel="stylesheet" href="https://gitcdn.link/repo/DanySK/css-blur-animation/master/blur.css">
+<link href="https://fonts.googleapis.com/css?family=Roboto Mono" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Oxygen Mono" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Ubuntu Mono" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+<script src="https://kit.fontawesome.com/81ac037be0.js" crossorigin="anonymous"></script>
+
+  </head>
+  <body>
+    
+    <div class="reveal">
+      <div class="slides">
+  
+
+    <section><h2 id="high-fidelity-simulation-of-aggregate-computing-systems">High-Fidelity Simulation of Aggregate Computing Systems</h2>
+<h2 id="with-collektivity">with Collektivity</h2>
+<br>
+<p><em>Filippo Gurioli</em>, <strong><em>Martina Baiardi</em></strong>, <em>Angela Cortecchia</em>, and <em>Danilo Pianini</em>
+<br>
+<br><small>
+Department of Computer Science and Engineering <br>
+University of Bologna, Cesena, Italy
+</small></p>
+</section><section>
+
+<div class="multiCol h-100"><div class="col col-50 "><h2 id="context-collective-adaptive-systems">Context: Collective Adaptive Systems</h2>
+<ul>
+<li>
+<p>Collective Adaptive Systems are made of many <em>situated</em> and <em>interacting</em> devices.</p>
+</li>
+<li>
+<p>Their behaviour emerges from <em>local interactions</em> under mobility, failures, and changing environments.</p>
+</li>
+<li>
+<p>Examples include robot swarms, sensor networks, and IoT applications.</p>
+</li>
+</ul>
+</div>
+<div class="col col-50 text-center h-100 my-auto"><p><img src="images/macro-swarm-7.gif" style="height:80vh !important"><br></p>
+</div>
+</div>
+</section><section>
+
+<div class="multiCol "><div class="col col-50 "><h2 id="context-aggregate-programming">Context: Aggregate Programming</h2>
+<p>Aggregate Programming lets developers express <em>collective behaviour</em> instead of orchestrating every device.</p>
+<ul>
+<li>A program runs repeatedly on each device.</li>
+<li>Devices exchange messages with neighbours.</li>
+<li>The global behaviour is represented as a <em>computational field</em>.</li>
+</ul>
+<p>In this paper, the aggregate runtime is <em>Collektive</em>, a Kotlin Multiplatform framework.</p>
+</div>
+<div class="col col-50 text-center"><div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#000">device</span> <span style="color:#000">round</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#000">read</span> <span style="color:#000">sensors</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#000">read</span> <span style="color:#000">neighbour</span> <span style="color:#000">messages</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#000">run</span> <span style="color:#000">aggregate</span> <span style="color:#000">program</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#000">send</span> <span style="color:#000">messages</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#000">apply</span> <span style="color:#000">actuators</span>
+</span></span></code></pre></div></div>
+</div>
+</section><section>
+<h2 id="motivation">Motivation</h2>
+<p>Simulation is central to validating Collective Adaptive Systems, but there is a persistent trade-off:</p>
+
+<div class="multiCol "><div class="col col-50 "><h3 id="lower-fidelity">Lower fidelity</h3>
+<ul>
+<li>Scales to large populations</li>
+<li>Supports parameter sweeps</li>
+<li>Easier to automate</li>
+<li>Simplifies physics and environment</li>
+</ul>
+</div>
+<div class="col col-50 "><h3 id="higher-fidelity">Higher fidelity</h3>
+<ul>
+<li>More realistic physics</li>
+<li>Richer environments</li>
+<li>Better sensing and actuation models</li>
+<li>Harder to build from scratch</li>
+</ul>
+</div>
+</div>
+</section><section>
+
+<div class="multiCol "><div class="col col-50 "><h2 id="why-game-engines">Why Game Engines?</h2>
+<p>Game engines already provide capabilities that CAS simulators often need:</p>
+<ul>
+<li>real-time 3D rendering</li>
+<li>physics and collisions</li>
+<li>interactive scene authoring</li>
+<li>complex environments</li>
+<li>support for mixed reality and digital twins</li>
+</ul>
+<p>The open question: can we run aggregate programs <em>inside</em> such an environment, not just visualize traces?</p>
+</div>
+<div class="col col-50 text-center"><img src="images/paper/figure-014.png" style="height:80vh !important">
+</div>
+</div>
+</section><section>
+<h2 id="proposal-collektivity">Proposal: Collektivity</h2>
+<p>Collektivity integrates <em>Collektive</em> with the <em>Unity</em> game engine.</p>
+
+<div class="multiCol "><div class="col col-50 "><h3 id="unity">Unity</h3>
+<ul>
+<li>owns the world</li>
+<li>computes physics</li>
+<li>samples sensors</li>
+<li>maintains neighbourhoods</li>
+<li>applies actuator commands</li>
+</ul>
+</div>
+<div class="col col-50 "><h3 id="collektive">Collektive</h3>
+<ul>
+<li>executes aggregate rounds</li>
+<li>stores device state</li>
+<li>manages neighbour messages</li>
+<li>computes collective behaviour</li>
+<li>returns actuator data</li>
+</ul>
+</div>
+</div>
+</section><section>
+<h2 id="architecture">Architecture</h2>
+<img src="images/paper/figure-008.png" style="max-height:76vh !important">
+<small>
+The yellow components are scenario-specific: concrete nodes, sensors, actuators, and the aggregate entry point.
+</small>
+</section><section>
+<h2 id="requirements">Requirements</h2>
+
+<div class="multiCol "><div class="col col-50 "><h3 id="r1-case-study-agnostic">R1: Case-study agnostic</h3>
+<p>The integration layer must not hard-code a specific domain.</p>
+<h3 id="r2-bidirectional">R2: Bidirectional</h3>
+<p>Unity sends <em>sensor data</em> to Collektive; Collektive sends <em>actuation commands</em> back.</p>
+</div>
+<div class="col col-50 "><h3 id="r3-high-performance">R3: High performance</h3>
+<p>The bridge must be fast enough to support hundreds of simulated devices.</p>
+<h3 id="design-consequence">Design consequence</h3>
+<p>Use a shared, platform-agnostic data model for sensors and actuators.</p>
+</div>
+</div>
+</section><section>
+
+<div class="multiCol "><div class="col col-50 "><h2 id="shared-data-model">Shared Data Model</h2>
+<p>Collektivity uses <em>Protocol Buffers</em> to define the data exchanged across Unity and Collektive.</p>
+<ul>
+<li>one schema</li>
+<li>generated C# bindings for Unity</li>
+<li>generated Kotlin bindings for Collektive</li>
+<li>explicit <code>Sensors</code> and <code>Actuators</code> messages</li>
+</ul>
+</div>
+<div class="col col-50 text-center"><div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">message</span> <span style="color:#000">Actuators</span> <span style="color:#000;font-weight:bold">{</span><span style="color:#a40000">
+</span></span></span><span style="display:flex;"><span>  <span style="color:#000">Vector3</span> <span style="color:#000">targetPosition</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">;</span><span style="color:#a40000">
+</span></span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">}</span><span style="color:#a40000">
+</span></span></span><span style="display:flex;"><span><span style="color:#a40000">
+</span></span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">message</span> <span style="color:#000">Sensors</span> <span style="color:#000;font-weight:bold">{</span><span style="color:#a40000">
+</span></span></span><span style="display:flex;"><span>  <span style="color:#204a87;font-weight:bold">double</span> <span style="color:#000">sourceIntensity</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">;</span><span style="color:#a40000">
+</span></span></span><span style="display:flex;"><span>  <span style="color:#000">Vector3</span> <span style="color:#000">currentPosition</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#0000cf;font-weight:bold">2</span><span style="color:#000;font-weight:bold">;</span><span style="color:#a40000">
+</span></span></span><span style="display:flex;"><span>  <span style="color:#204a87;font-weight:bold">repeated</span> <span style="color:#000">Vector3</span> <span style="color:#000">obstacles</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#0000cf;font-weight:bold">3</span><span style="color:#000;font-weight:bold">;</span><span style="color:#a40000">
+</span></span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">}</span><span style="color:#a40000">
+</span></span></span></code></pre></div></div>
+</div>
+</section><section>
+
+<div class="multiCol "><div class="col col-50 "><h2 id="native-execution-through-ffi">Native Execution Through FFI</h2>
+<p>Unity and Collektive do not share the same runtime:</p>
+<ul>
+<li>Unity runs on a custom .NET environment.</li>
+<li>Collektive is Kotlin Multiplatform.</li>
+<li>Existing Collektive targets cannot simply run inside Unity.</li>
+</ul>
+<p>The solution is to compile Collektive as a <em>native library</em> and invoke it from Unity through FFI.</p>
+</div>
+<div class="col col-50 text-center"><div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">interface</span> <span style="color:#000">Engine</span> <span style="color:#000;font-weight:bold">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#204a87;font-weight:bold">fun</span> <span style="color:#000">step</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">id</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">Int</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">sensorData</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">Sensors</span><span style="color:#000;font-weight:bold">):</span> <span style="color:#000">Actuators</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#204a87;font-weight:bold">fun</span> <span style="color:#000">subscribe</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">node1</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">Int</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">node2</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">Int</span><span style="color:#000;font-weight:bold">):</span> <span style="color:#000">Boolean</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#204a87;font-weight:bold">fun</span> <span style="color:#000">unsubscribe</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">node1</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">Int</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">node2</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">Int</span><span style="color:#000;font-weight:bold">):</span> <span style="color:#000">Boolean</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#204a87;font-weight:bold">fun</span> <span style="color:#000">addNode</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">id</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">Int</span><span style="color:#000;font-weight:bold">):</span> <span style="color:#000">Boolean</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#204a87;font-weight:bold">fun</span> <span style="color:#000">removeNode</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">id</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">Int</span><span style="color:#000;font-weight:bold">):</span> <span style="color:#000">Boolean</span>
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">}</span>
+</span></span></code></pre></div></div>
+</div>
+</section><section>
+<h2 id="runtime-cycle">Runtime Cycle</h2>
+
+<div class="multiCol "><div class="col col-50 "><p>At every simulation tick:</p>
+<ol>
+<li>Unity samples the world state.</li>
+<li>Unity calls <code>step(id, sensors)</code>.</li>
+<li>Collektive runs one aggregate round.</li>
+<li>Collektive returns actuator commands.</li>
+<li>Unity applies the commands.</li>
+<li>Unity updates neighbourhood links.</li>
+</ol>
+</div>
+<div class="col col-50 "><p>This keeps the division of responsibilities clean:</p>
+<ul>
+<li>Unity owns embodiment and environment.</li>
+<li>Collektive owns distributed computation semantics.</li>
+<li>The schema owns cross-platform data exchange.</li>
+</ul>
+</div>
+</div>
+</section><section>
+<h2 id="result-communication-benchmark">Result: Communication Benchmark</h2>
+<p>The authors compared two bridge strategies on a 12-node prototype:</p>
+
+<div class="multiCol "><div class="col col-50 "><h3 id="socket-backend">Socket backend</h3>
+<ul>
+<li>Unity and Collektive run as separate processes.</li>
+<li>Data crosses TCP sockets.</li>
+<li>More flexible, but expensive.</li>
+</ul>
+</div>
+<div class="col col-50 "><h3 id="native-backend">Native backend</h3>
+<ul>
+<li>Collektive is compiled as a native shared library.</li>
+<li>Unity invokes it through FFI.</li>
+<li>Much faster, so it was selected.</li>
+</ul>
+</div>
+</div>
+<br>
+<p><em>Mean end-to-end socket execution was over 450x slower than native FFI; p99 slowdown was over 700x.</em></p>
+</section><section>
+
+<div class="multiCol "><div class="col col-50 "><h2 id="result-simple-3d-exemplar">Result: Simple 3D Exemplar</h2>
+<p>The first exemplar deploys devices in a simple 3D arena with obstacles.</p>
+<ul>
+<li>Devices move toward a source of interest.</li>
+<li>They avoid nearby obstacles and other devices.</li>
+<li>They use distance-based neighbourhoods.</li>
+<li>Aggregate rounds run at <em>20Hz</em>.</li>
+</ul>
+<p>The system reached 100 nodes on a desktop with a dedicated GPU.</p>
+</div>
+<div class="col col-50 text-center"><img src="images/paper/figure-010.png" width="48%" class="preview-border">
+<img src="images/paper/figure-011.png" width="48%" class="preview-border"><br>
+<img src="images/paper/figure-012.png" width="48%" class="preview-border">
+<img src="images/paper/figure-013.png" width="48%" class="preview-border">
+</div>
+</div>
+</section>
+
+<section data-noprocess="" data-shortcode-slide="" data-background-image="https://anitvam.github.io/coordination-2026-collektivity-slides/images/paper/figure-017.png" data-background-opacity="0.35" data-background-position="center" data-background-size="cover">
+  
+<h2 id="result-richer-unity-environment">Result: Richer Unity Environment</h2>
+<p>The same aggregate behaviour was tested in Unity’s <em>Oasis</em> environment.</p>
+
+<div class="multiCol "><div class="col col-50 "><ul>
+<li>Trees, rocks, bushes, and terrain become physical obstacles.</li>
+<li>The source is placed inside a tent across the arena.</li>
+<li>The scenario demonstrates the benefit of using an existing high-fidelity environment.</li>
+</ul>
+</div>
+<div class="col col-50 "><ul>
+<li>100 nodes were demonstrated.</li>
+<li>Real-time execution required the better equipped desktop.</li>
+<li>Rendering, geometry, and physics increase the simulation cost.</li>
+</ul>
+</div>
+</div>
+</section><section>
+<h2 id="what-the-paper-shows">What The Paper Shows</h2>
+
+<div class="multiCol "><div class="col col-50 "><h3 id="achieved">Achieved</h3>
+<ul>
+<li>Collektive can be executed from Unity.</li>
+<li>Unity can drive aggregate rounds.</li>
+<li>Sensors and actuators can be schema-driven.</li>
+<li>Native FFI makes the bridge practical.</li>
+</ul>
+</div>
+<div class="col col-50 "><h3 id="still-open">Still open</h3>
+<ul>
+<li>More complex aggregate programs.</li>
+<li>Larger populations: 1,000 and 10,000 nodes.</li>
+<li>Entity Component System comparison.</li>
+<li>Portability to Unreal Engine or Godot.</li>
+</ul>
+</div>
+</div>
+</section><section>
+<h2 id="conclusion">Conclusion</h2>
+<p>Collektivity is a toolchain for running <em>aggregate programs written in Collektive</em> on top of <em>Unity</em>.</p>
+<p>It turns the game engine into a high-fidelity environment layer for Collective Adaptive Systems, while preserving the aggregate runtime as the place where distributed computation semantics live.</p>
+<br>
+<p>Source code and benchmark artifacts are publicly available:</p>
+<small>
+https://github.com/pslab-unibo/collektivity <br>
+https://github.com/pslab-unibo/experiment-2026-coordination-collektive-unity-benchmark
+</small>
+<h3 id="thank-you">Thank you</h3>
+</section>
+
+  
+
+
+</div>
+      
+
+    </div>
+<script type="text/javascript" src="/coordination-2026-collektivity-slides/reveal-hugo/object-assign.js"></script>
+
+<a href="/coordination-2026-collektivity-slides/reveal-js/dist/print/" id="print-location" style="display: none;"></a>
+
+<script type="application/json" id="reveal-hugo-site-params">{"custom_theme":"custom-theme.scss","custom_theme_compile":true,"custom_theme_options":{"enablesourcemap":true,"targetpath":"css/custom-theme.css"},"height":"1080","highlight_theme":"solarized-dark","history":true,"mermaid":[{}],"slide_number":true,"theme":"league","transition":"slide","transition_speed":"fast","width":"1920"}</script>
+<script type="application/json" id="reveal-hugo-page-params">null</script>
+
+<script src="/coordination-2026-collektivity-slides/reveal-js/dist/reveal.js"></script>
+
+
+  
+  
+  <script type="text/javascript" src="/coordination-2026-collektivity-slides/reveal-js/plugin/markdown/markdown.js"></script>
+  
+  <script type="text/javascript" src="/coordination-2026-collektivity-slides/reveal-js/plugin/highlight/highlight.js"></script>
+  
+  <script type="text/javascript" src="/coordination-2026-collektivity-slides/reveal-js/plugin/zoom/zoom.js"></script>
+  
+  <script type="text/javascript" src="/coordination-2026-collektivity-slides/reveal-js/plugin/notes/notes.js"></script>
+  
+  
+  <script type="text/javascript" src="/coordination-2026-collektivity-slides/reveal-js/plugin/notes/notes.js"></script>
+
+
+
+
+<script type="text/javascript">
+  
+  
+  function camelize(map) {
+    if (map) {
+      Object.keys(map).forEach(function(k) {
+        newK = k.replace(/(\_\w)/g, function(m) { return m[1].toUpperCase() });
+        if (newK != k) {
+          map[newK] = map[k];
+          delete map[k];
+        }
+      });
+    }
+    return map;
+  }
+
+  var revealHugoDefaults = { center: true, controls: true, history: true, progress: true, transition: "slide" };
+
+  var revealHugoPlugins = {
+    plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealZoom ]
+   };
+  var revealHugoSiteParams = JSON.parse(document.getElementById('reveal-hugo-site-params').innerHTML);
+  var revealHugoPageParams = JSON.parse(document.getElementById('reveal-hugo-page-params').innerHTML);
+  
+  var options = Object.assign({},
+    camelize(revealHugoDefaults),
+    camelize(revealHugoSiteParams),
+    camelize(revealHugoPageParams),
+    camelize(revealHugoPlugins));
+  Reveal.initialize(options);
+</script>
+
+
+
+
+
+
+
+  
+  
+
+  
+  
+
+  
+  
+
+
+
+
+
+    <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+</script>
+
+<script type="text/javascript" id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+
+<script>
+  if (/.*?(\?|&)print-pdf/.test(window.location.toString())) {
+      var ytVideos = document.getElementsByTagName("iframe")
+      for (let i = 0; i < ytVideos.length; i++) {
+          var videoFrame = ytVideos[i]
+          var isYouTube = /^https?:\/\/(www.)youtube\.com\/.*/.test(videoFrame.src)
+          if (isYouTube) {
+              console.log(`Removing ${videoFrame.src}`)
+              var parent = videoFrame.parentElement
+              videoFrame.remove()
+              var p = document.createElement('p')
+              p.append(
+                  document.createTextNode(
+                      "There was an embedded video here, but it is disabled in the printed version of the slides."
+                  )
+              )
+              p.append(document.createElement('br'))
+              p.append(
+                  document.createTextNode(
+                      `Visit instead ${
+                          videoFrame.src
+                      } or ${
+                          videoFrame.src.replace(
+                              /(^https?:\/\/(www.)youtube\.com)\/(embed\/)(\w+).*/,
+                              "https://www.youtube.com/watch?v=$4"
+                          )
+                      }`
+                  )
+              )
+              parent.appendChild(p)
+          }
+      }
+  }
+</script>
+
+
+    
+  
+
+</body></html>
