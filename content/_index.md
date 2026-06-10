@@ -212,16 +212,10 @@ Collektivity integrates *Collektive* with the *Unity* game engine.
 
 ---
 
-## Architecture
-
-<img src="images/paper/figure-008.png" style="max-height:76vh !important" />
-
----
-
 {{% multicol %}}
 {{% col %}}
 
-## Shared Data Model
+## Shared Data Model Challenge
 
 Collektivity uses *Protocol Buffers* to define the data exchanged across Unity and Collektive.
 
@@ -481,3 +475,10 @@ https://github.com/pslab-unibo/experiment-2026-coordination-collektive-unity-ben
 </small>
 
 ### Thank you
+
+---
+
+## Architecture
+
+<img src="images/paper/figure-008.png" style="max-height:76vh !important" />
+
